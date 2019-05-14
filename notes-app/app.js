@@ -1,3 +1,8 @@
+const validator = require('validator');
+
 const getNotes = require('./notes');
 
-console.log(getNotes());
+const notes = getNotes();
+
+console.log(notes);
+console.log(validator.isEmail('test@gmailcom'));
