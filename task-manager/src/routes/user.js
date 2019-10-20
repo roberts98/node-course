@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/users/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
 
@@ -40,7 +40,7 @@ router.get('/users/:id', async (req, res) => {
   }
 });
 
-router.patch('/users/:id', async (req, res) => {
+router.patch('/:id', async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ['name', 'email', 'password', 'age'];
   const isAllowed = updates.every(update => allowedUpdates.includes(update));
@@ -50,10 +50,11 @@ router.patch('/users/:id', async (req, res) => {
   }
 
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    });
+    const user = await User.findById(req.params.id);
+
+    updates.forEach(update => (user[update] = req.body[update]));
+
+    await user.save();
 
     if (!user) {
       res.status(404).send();
@@ -65,7 +66,7 @@ router.patch('/users/:id', async (req, res) => {
   }
 });
 
-router.delete('/users/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
 

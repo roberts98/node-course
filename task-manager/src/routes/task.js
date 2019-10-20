@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/tasks/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
 
@@ -40,7 +40,7 @@ router.get('/tasks/:id', async (req, res) => {
   }
 });
 
-router.patch('/tasks/:id', async (req, res) => {
+router.patch('/:id', async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ['description', 'completed'];
   const isAllowed = updates.every(update => allowedUpdates.includes(update));
@@ -50,10 +50,11 @@ router.patch('/tasks/:id', async (req, res) => {
   }
 
   try {
-    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    });
+    const task = await Task.findById(req.params.id);
+
+    updates.forEach(update => (task[update] = req.body[update]));
+
+    await task.save();
 
     if (!task) {
       return res.status(404).send();
@@ -65,7 +66,7 @@ router.patch('/tasks/:id', async (req, res) => {
   }
 });
 
-router.delete('/tasks/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const task = await Task.findByIdAndDelete(req.params.id);
 
