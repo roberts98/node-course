@@ -15,15 +15,11 @@ const User = mongoose.model('User', {
   }
 });
 
-const me = new User({
-  name: 'Robert',
-  age: 21
+const Task = mongoose.model('Task', {
+  description: {
+    type: String
+  },
+  completed: {
+    type: Boolean
+  }
 });
-
-me.save()
-  .then(result => {
-    console.log(result);
-  })
-  .catch(error => {
-    console.log(error);
-  });
